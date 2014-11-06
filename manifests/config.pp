@@ -66,34 +66,43 @@ class logstashforwarder::config {
     $ssl_cert = $logstashforwarder::ssl_cert
     $ssl_ca = $logstashforwarder::ssl_ca
     $ssl_key = $logstashforwarder::ssl_key
+    if $ssl_cert != undef {
+      if $ssl_cert =~ /^puppet\:\/\// {
 
-    if $ssl_cert =~ /^puppet\:\/\// {
+        $filenameArray_ssl_cert = split($ssl_cert, '/')
+        $basefilename_ssl_cert = $filenameArray_ssl_cert[-1]
 
-      $filenameArray_ssl_cert = split($ssl_cert, '/')
-      $basefilename_ssl_cert = $filenameArray_ssl_cert[-1]
-
-      file { "${ssldir}/${basefilename_ssl_cert}":
-        source  => $ssl_cert,
-        mode    => '0440',
-        require => File[$ssldir]
+        file { "${ssldir}/${basefilename_ssl_cert}":
+          source  => $ssl_cert,
+          mode    => '0440',
+          require => File[$ssldir]
+        }
+        $opt_ssl_cert = "${ssldir}/${basefilename_ssl_cert}"
+      } else {
+        $opt_ssl_cert = $ssl_cert
       }
-      $opt_ssl_cert = "${ssldir}/${basefilename_ssl_cert}"
-    } else {
+    }
+    else {
       $opt_ssl_cert = $ssl_cert
     }
 
-    if $ssl_ca =~ /^puppet\:\/\// {
+    if $ssl_ca != undef {
+      if $ssl_ca =~ /^puppet\:\/\// {
 
-      $filenameArray_ssl_ca = split($ssl_ca, '/')
-      $basefilename_ssl_ca = $filenameArray_ssl_ca[-1]
+        $filenameArray_ssl_ca = split($ssl_ca, '/')
+        $basefilename_ssl_ca = $filenameArray_ssl_ca[-1]
 
-      file { "${ssldir}/${basefilename_ssl_ca}":
-        source  => $ssl_ca,
-        mode    => '0440',
-        require => File[$ssldir]
+        file { "${ssldir}/${basefilename_ssl_ca}":
+          source  => $ssl_ca,
+          mode    => '0440',
+          require => File[$ssldir]
+        }
+        $opt_ssl_ca = "${ssldir}/${basefilename_ssl_ca}"
+      } else {
+        $opt_ssl_ca = $ssl_ca
       }
-      $opt_ssl_ca = "${ssldir}/${basefilename_ssl_ca}"
-    } else {
+    }
+    else {
       $opt_ssl_ca = $ssl_ca
     }
 
