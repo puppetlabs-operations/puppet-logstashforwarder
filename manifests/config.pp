@@ -97,18 +97,23 @@ class logstashforwarder::config {
       $opt_ssl_ca = $ssl_ca
     }
 
-    if $ssl_key =~ /^puppet\:\/\// {
+    if $ssl_key != undef {
+      if $ssl_key =~ /^puppet\:\/\// {
 
-      $filenameArray_ssl_key = split($ssl_key, '/')
-      $basefilename_ssl_key = $filenameArray_ssl_key[-1]
+        $filenameArray_ssl_key = split($ssl_key, '/')
+        $basefilename_ssl_key = $filenameArray_ssl_key[-1]
 
-      file { "${ssldir}/${basefilename_ssl_key}":
-        source  => $ssl_key,
-        mode    => '0440',
-        require => File[$ssldir]
+        file { "${ssldir}/${basefilename_ssl_key}":
+          source  => $ssl_key,
+          mode    => '0440',
+          require => File[$ssldir]
+        }
+        $opt_ssl_key = "${ssldir}/${basefilename_ssl_key}"
+      } else {
+        $opt_ssl_key = $ssl_key
       }
-      $opt_ssl_key = "${ssldir}/${basefilename_ssl_key}"
-    } else {
+    }
+    else {
       $opt_ssl_key = $ssl_key
     }
 
