@@ -21,7 +21,8 @@
 #
 define logstashforwarder::file(
   $paths,
-  $fields = ''
+  $fields = '',
+  $dead_time = '1h'
 ) {
 
   validate_array($paths)
@@ -32,7 +33,7 @@ define logstashforwarder::file(
   if ($fields != '') {
     validate_hash($fields)
     $arr_fields = inline_template('<%= @fields.sort.collect { |k,v| "\"#{k}\": \"#{v}\"" }.join(", ") %>')
-    $opt_fields = ",\n      \"fields\": { ${arr_fields} }\n    "
+    $opt_fields = ",\n      \"fields\": { ${arr_fields} },\n      \"dead time\": \"${dead_time}\"\n    "
   }
 
   $content = "    {\n    ${opt_paths}${opt_fields}}"
