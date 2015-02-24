@@ -23,7 +23,9 @@
 # * Phil Fenstermacher <mailto:phillip.fenstermacher@gmail.com>
 # * Ricahrd Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
-class logstashforwarder::repo {
+class logstashforwarder::repo(
+  $ensure = 'absent',
+){
 
   case $::osfamily {
     'Debian': {
@@ -32,6 +34,7 @@ class logstashforwarder::repo {
       }
 
       apt::source { 'logstashforwarder':
+        ensure      => $ensure,
         location    => 'http://packages.elasticsearch.org/logstashforwarder/debian',
         release     => 'stable',
         repos       => 'main',
@@ -42,6 +45,7 @@ class logstashforwarder::repo {
     }
     'RedHat': {
       yumrepo { 'logstashforwarder':
+        ensure   => $ensure,
         baseurl  => 'http://packages.elasticsearch.org/logstashforwarder/centos',
         gpgcheck => 1,
         gpgkey   => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',

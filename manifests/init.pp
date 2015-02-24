@@ -184,7 +184,13 @@ class logstashforwarder(
 
   if ($manage_repo == true) {
     # Set up repositories
-    class { 'logstashforwarder::repo': }
+    class { 'logstashforwarder::repo':
+      ensure => 'present',
+    }
+  else {
+    class { 'logstashforwarder::repo':
+      ensure => 'absent',
+  }
 
     # Ensure that we set up the repositories before trying to install
     # the packages
