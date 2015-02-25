@@ -199,7 +199,6 @@ class logstashforwarder(
     Anchor['logstashforwarder::begin']
     -> Class['logstashforwarder::repo']
     -> Class['logstashforwarder::package']
-  }
 
   #### Manage relationships
 
@@ -225,5 +224,4 @@ class logstashforwarder(
     -> Anchor['logstashforwarder::end']
 
   }
-
 }
