@@ -191,6 +191,7 @@ class logstashforwarder(
     class { 'logstashforwarder::repo':
       ensure => 'absent',
   }
+  }
 
     # Ensure that we set up the repositories before trying to install
     # the packages
