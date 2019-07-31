@@ -38,9 +38,10 @@ class logstashforwarder::repo(
         location    => 'http://packages.elasticsearch.org/logstashforwarder/debian',
         release     => 'stable',
         repos       => 'main',
-        key         => 'D88E42B4',
-        key_server  => 'pgp.mit.edu',
-        include_src => false,
+        key         => {
+          'id'     => 'D88E42B4',
+          'server' => 'pgp.mit.edu',
+        },
       }
     }
     'RedHat': {
