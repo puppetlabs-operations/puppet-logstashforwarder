@@ -106,7 +106,7 @@ class logstashforwarder::params {
 
   # packages
   case $::operatingsystem {
-    'RedHat', 'CentOS', 'Fedora', 'Scientific', 'Amazon', 'OracleLinux': {
+    'RedHat', 'AlmaLinux', 'CentOS', 'Fedora', 'Scientific', 'Amazon', 'OracleLinux': {
       # main application
       $package = [ 'logstash-forwarder' ]
     }
@@ -122,7 +122,7 @@ class logstashforwarder::params {
 
   # service parameters
   case $::operatingsystem {
-    'RedHat', 'CentOS', 'Fedora', 'Scientific', 'Amazon', 'OracleLinux': {
+    'RedHat', 'AlmaLinux', 'CentOS', 'Fedora', 'Scientific', 'Amazon', 'OracleLinux': {
       $service_name       = 'logstash-forwarder'
       $service_hasrestart = true
       $service_hasstatus  = true
