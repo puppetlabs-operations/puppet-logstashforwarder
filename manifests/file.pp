@@ -20,18 +20,15 @@
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 define logstashforwarder::file(
-  $paths,
-  $fields = '',
-  $dead_time = '1h'
+  Array $paths,
+  Variant[Hash, String] $fields = '',
+  String $dead_time = '1h'
 ) {
-
-  validate_array($paths)
 
   $arr_paths = inline_template('<%= "[ "+@paths.sort.collect { |k| "\"#{k}\""}.join(", ")+" ]" %>')
   $opt_paths = "  \"paths\": ${arr_paths}"
 
   if ($fields != '') {
-    validate_hash($fields)
     $arr_fields = inline_template('<%= @fields.sort.collect { |k,v| "\"#{k}\": \"#{v}\"" }.join(", ") %>')
     $opt_fields = ",\n      \"fields\": { ${arr_fields} },\n      \"dead time\": \"${dead_time}\"\n    "
   }
