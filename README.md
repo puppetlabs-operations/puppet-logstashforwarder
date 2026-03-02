@@ -1,8 +1,8 @@
 # puppet-logstashforwarder
 
-A puppet module for managing [logstash-forwarder](https://github.com/elasticsearch/logstash-forwarder)
+A puppet module for managing [logstash-forwarder](https://github.com/elastic/logstash-forwarder)
 
-[![Build Status](https://travis-ci.org/elasticsearch/puppet-logstashforwarder.png?branch=master)](https://travis-ci.org/elasticsearch/puppet-logstashforwarder)
+[![Build Status](https://travis-ci.org/elastic/puppet-logstashforwarder.png?branch=master)](https://travis-ci.org/elastic/puppet-logstashforwarder)
 
 ## Requirements
 
@@ -141,4 +141,4 @@ The *defaults* file (`/etc/defaults/logstashforwarder` or `/etc/sysconfig/logsta
 
 ## Support
 
-Need help? Join us in `#logstash` on Freenode IRC or subscribe to the `logstash-users@googlegroups.com` mailing list.
+Need help? Join us in `#logstash` on Freenode IRC or on the https://discuss.elastic.co/c/logstash discussion forum.

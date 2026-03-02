@@ -1,7 +1,7 @@
 # == Class: logstashforwarder::repo
 #
 # This class exists to install and manage yum and apt repositories
-# that contain logstashforwarder official logstashforwarder packages
+# that contain elasticsearch official Logstash Forwarder packages
 #
 #
 # === Parameters
@@ -20,12 +20,16 @@
 #
 # === Authors
 #
-# * Phil Fenstermacher <mailto:phillip.fenstermacher@gmail.com>
-# * Ricahrd Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
+# * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 class logstashforwarder::repo(
   $ensure = 'absent',
 ){
+
+  Exec {
+    path      => [ '/bin', '/usr/bin', '/usr/local/bin' ],
+    cwd       => '/',
+  }
 
   case $::osfamily {
     'Debian': {
@@ -44,13 +48,30 @@ class logstashforwarder::repo(
         },
       }
     }
-    'RedHat': {
+    'RedHat', 'Linux': {
       yumrepo { 'logstashforwarder':
         ensure   => $ensure,
         baseurl  => 'http://packages.elasticsearch.org/logstashforwarder/centos',
         gpgcheck => 1,
         gpgkey   => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
         enabled  => 1,
+      }
+    }
+    'Suse': {
+      exec { 'logstashforwarder_suse_import_gpg':
+        command => 'rpmkeys --import http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
+        unless  => 'test $(rpm -qa gpg-pubkey | grep -i "D88E42B4" | wc -l) -eq 1 ',
+        notify  => [ Zypprepo['elasticsearch'] ]
+      }
+
+      zypprepo { 'logstashforwarder':
+        baseurl     => 'http://packages.elasticsearch.org/logstashforwarder/centos',
+        enabled     => 1,
+        autorefresh => 1,
+        name        => 'logstashforwarder',
+        gpgcheck    => 1,
+        gpgkey      => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
+        type        => 'yum'
       }
     }
     default: {

@@ -59,6 +59,52 @@
 #   Defaults to <tt>true</tt>, which will restart the application on any config
 #   change. Setting to <tt>false</tt> disables the automatic restart.
 #
+# [*configdir*]
+#   Path to directory containing the Logstash Forwarder configuration.
+#   Use this setting if your packages deviate from the norm (/etc/logstashforwarder)
+#
+# [*package_url*]
+#   Url to the package to download.
+#   This can be a http,https or ftp resource for remote packages
+#   puppet:// resource or file:/ for local packages
+#
+# [*package_provider*]
+#   Way to install the packages, currently only packages are supported.
+#
+# [*package_dir*]
+#   Directory where the packages are downloaded to
+#
+# [*purge_package_dir*]
+#   Purge package directory on removal
+#
+# [*package_dl_timeout*]
+#   For http,https and ftp downloads you can set howlong the exec resource may take.
+#   Defaults to: 600 seconds
+#
+# [*logstashforwarder_user*]
+#   The user Logstash Forwarder should run as. This also sets the file rights.
+#
+# [*logstashforwarder_group*]
+#   The group Logstash Forwarder should run as. This also sets the file rights
+#
+# [*purge_configdir*]
+#   Purge the config directory for any unmanaged files
+#
+# [*service_provider*]
+#   Service provider to use. By Default when a single service provider is possibe that one is selected.
+#
+# [*init_defaults*]
+#   Defaults file content in hash representation
+#
+# [*init_defaults_file*]
+#   Defaults file as puppet resource
+#
+# [*init_template*]
+#   Service file as a template
+#
+# [*manage_repo*]
+#   Enable repo management by enabling our official repositories
+#
 # [*servers*]
 #   A list of downstream servers listening for our messages.
 #   logstash-forwarder will pick one at random and only switch if
@@ -104,7 +150,7 @@
 #
 # === Authors
 #
-# * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
+# * Richard Pijnenburg <mailto:richard.pijnenburg@elastic.co>
 #
 class logstashforwarder(
   String $ensure                  = $logstashforwarder::params::ensure,
@@ -189,6 +235,33 @@ class logstashforwarder(
   #### Manage relationships
 
   if $ensure == 'present' {
+
+    # autoupgrade
+    validate_bool($autoupgrade)
+
+    # service status
+    if ! ($status in [ 'enabled', 'disabled', 'running', 'unmanaged' ]) {
+      fail("\"${status}\" is not a valid status parameter value")
+    }
+
+    # restart on change
+    validate_bool($restart_on_change)
+
+    # purge conf dir
+    validate_bool($purge_configdir)
+
+    if ! ($service_provider in $logstashforwarder::params::service_providers) {
+      fail("\"${service_provider}\" is not a valid provider for \"${::operatingsystem}\"")
+    }
+
+    validate_bool($manage_repo)
+
+    validate_array($servers)
+    validate_string($ssl_key, $ssl_ca, $ssl_cert)
+
+    if (!is_integer($timeout)) {
+      fail("\"${timeout}\" is not a valid timeout value")
+    }
 
     # we need the software before configuring it
     Anchor['logstashforwarder::begin']
