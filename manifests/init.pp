@@ -107,30 +107,30 @@
 # * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 class logstashforwarder(
-  $ensure                  = $logstashforwarder::params::ensure,
-  $servers                 = undef,
-  $ssl_cert                = undef,
-  $ssl_key                 = undef,
-  $ssl_ca                  = undef,
-  $timeout                 = 15,
-  $status                  = $logstashforwarder::params::status,
-  $restart_on_change       = $logstashforwarder::params::restart_on_change,
-  $autoupgrade             = $logstashforwarder::params::autoupgrade,
-  $version                 = false,
-  $package_provider        = 'package',
-  $package_url             = undef,
-  $package_dir             = $logstashforwarder::params::package_dir,
-  $purge_package_dir       = $logstashforwarder::params::purge_package_dir,
-  $package_dl_timeout      = $logstashforwarder::params::package_dl_timeout,
-  $logstashforwarder_user  = $logstashforwarder::params::logstashforwarder_user,
-  $logstashforwarder_group = $logstashforwarder::params::logstashforwarder_group,
-  $configdir               = $logstashforwarder::params::configdir,
-  $purge_configdir         = $logstashforwarder::params::purge_configdir,
-  $service_provider        = 'init',
-  $init_defaults           = $logstashforwarder::params::init_defaults,
-  $init_defaults_file      = undef,
-  $init_template           = undef,
-  $manage_repo             = false
+  String                    $ensure                  = $logstashforwarder::params::ensure,
+  Optional[Array]           $servers                 = undef,
+  Optional[String]          $ssl_cert                = undef,
+  Optional[String]          $ssl_key                 = undef,
+  Optional[String]          $ssl_ca                  = undef,
+  Integer                   $timeout                 = 15,
+  String                    $status                  = $logstashforwarder::params::status,
+  Boolean                   $restart_on_change       = $logstashforwarder::params::restart_on_change,
+  Boolean                   $autoupgrade             = $logstashforwarder::params::autoupgrade,
+  $version                  = false,
+  String                    $package_provider        = 'package',
+  Optional[String]          $package_url             = undef,
+  String                    $package_dir             = $logstashforwarder::params::package_dir,
+  $purge_package_dir        = $logstashforwarder::params::purge_package_dir,
+  $package_dl_timeout       = $logstashforwarder::params::package_dl_timeout,
+  String                    $logstashforwarder_user  = $logstashforwarder::params::logstashforwarder_user,
+  String                    $logstashforwarder_group = $logstashforwarder::params::logstashforwarder_group,
+  String                    $configdir               = $logstashforwarder::params::configdir,
+  Boolean                   $purge_configdir         = $logstashforwarder::params::purge_configdir,
+  String                    $service_provider        = 'init',
+  $init_defaults            = $logstashforwarder::params::init_defaults,
+  Optional[String]          $init_defaults_file      = undef,
+  Optional[String]          $init_template           = undef,
+  Boolean                   $manage_repo             = false
 ) inherits logstashforwarder::params {
 
   anchor {'logstashforwarder::begin': }
@@ -144,31 +144,13 @@ class logstashforwarder(
     fail("\"${ensure}\" is not a valid ensure parameter value")
   }
 
-  # autoupgrade
-  validate_bool($autoupgrade)
-
   # service status
   if ! ($status in [ 'enabled', 'disabled', 'running', 'unmanaged' ]) {
     fail("\"${status}\" is not a valid status parameter value")
   }
 
-  # restart on change
-  validate_bool($restart_on_change)
-
-  # purge conf dir
-  validate_bool($purge_configdir)
-
   if ! ($service_provider in $logstashforwarder::params::service_providers) {
     fail("\"${service_provider}\" is not a valid provider for \"${::operatingsystem}\"")
-  }
-
-  validate_bool($manage_repo)
-
-  validate_array($servers)
-  validate_string($ssl_key, $ssl_ca, $ssl_cert)
-
-  if (!is_integer($timeout)) {
-    fail("\"${timeout}\" is not a valid timeout value")
   }
 
   #### Manage actions
