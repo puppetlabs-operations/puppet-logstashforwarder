@@ -199,10 +199,6 @@ class logstashforwarder(
     fail("\"${service_provider}\" is not a valid provider for \"${::operatingsystem}\"")
   }
 
-  if (!is_integer($timeout)) {
-    fail("\"${timeout}\" is not a valid timeout value")
-  }
-
   #### Manage actions
 
   # package(s)

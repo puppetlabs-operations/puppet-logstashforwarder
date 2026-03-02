@@ -78,7 +78,7 @@ define logstashforwarder::service::init{
     if ($logstashforwarder::init_defaults_file != undef) {
       $defaults_content = undef
       $defaults_source  = $logstashforwarder::init_defaults_file
-    } elsif ($logstashforwarder::init_defaults != undef and is_hash($logstashforwarder::init_defaults) ) {
+    } elsif ($logstashforwarder::init_defaults != undef and $logstashforwarder::init_defaults =~ Hash ) {
       $defaults_content = template("${module_name}/etc/sysconfig/defaults.erb")
       $defaults_source  = undef
     } else {
